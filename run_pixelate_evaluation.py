@@ -34,7 +34,7 @@ pipeline_args_vitpose = [
 
 module_name = "tools/test.py"
 
-'''for i, args in enumerate(pipeline_args_rtmpose, start=1):
+for i, args in enumerate(pipeline_args_rtmpose, start=1):
     intensity = args[0].split("_")[-1].split(".")[0]
 
     try:
@@ -67,7 +67,7 @@ for i, args in enumerate(pipeline_args_hrnet, start=1):
 
         print(f"Evaluation for {model_path_hrnet_384x288} completed.")
     except subprocess.CalledProcessError as e:
-        print(f"Errore durante l'esecuzione con argomenti {args}")'''
+        print(f"Errore durante l'esecuzione con argomenti {args}")
 
 
 for i, args in enumerate(pipeline_args_vitpose, start=1):

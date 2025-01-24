@@ -22,10 +22,10 @@ def modify_kernel_size(config_path, new_kernel_size, output_path):
 
     print(f"File salvato con successo in: {output_path}")
 
-configs_folder = f'models/config/td-hm_ViTPose-huge_8xb64-210e_coco-256x192'
-kernel_value = [5, 5]
+configs_folder = f'models/config/blur/td-hm_ViTPose-huge_8xb64-210e_coco-256x192'
+kernel_value = [101, 101]
 
 for config in os.listdir(configs_folder):
-    output_path = f'models/config/td-hm_ViTPose-huge_8xb64-210e_coco-256x192/td-hm_ViTPose-huge_8xb64-210e_coco-256x192_{kernel_value[0]}x{kernel_value[1]}.py'
+    output_path = f'{configs_folder}/td-hm_ViTPose-huge_8xb64-210e_coco-256x192_{kernel_value[0]}x{kernel_value[1]}.py'
     modify_kernel_size(os.path.join(configs_folder, config), kernel_value, output_path)
     kernel_value = (kernel_value[0] + 4, kernel_value[1] + 4)
