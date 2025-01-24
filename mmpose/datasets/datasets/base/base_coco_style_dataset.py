@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
+import os
 import os.path as osp
 from copy import deepcopy
 from itertools import chain, filterfalse, groupby

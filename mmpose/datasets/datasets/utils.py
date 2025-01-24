@@ -1,4 +1,5 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import os.path
 import os.path as osp
 import warnings
 
@@ -91,6 +92,7 @@ def parse_pose_metainfo(metainfo: dict):
 
     if 'from_file' in metainfo:
         cfg_file = metainfo['from_file']
+        #cfg_file = os.path.join('..', cfg_file)
         if not osp.isfile(cfg_file):
             # Search configs in 'mmpose/.mim/configs/' in case that mmpose
             # is installed in non-editable mode.
