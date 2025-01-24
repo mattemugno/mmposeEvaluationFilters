@@ -256,11 +256,11 @@ val_evaluator = dict(
     ann_file='data/coco/annotations/person_keypoints_val2017.json',
     type='CocoMetric',
     format_only=True,
-    outfile_prefix='tools/json_results/vitpose-h/blur/format_only/5x5'
+    outfile_prefix='tools/json_results/vitpose-h/pixelate/format_only/'
 )
 val_pipeline = [
     dict(type='LoadImage'),
-    dict(type='ApplyGaussianBlur', kernel_size=(5, 5)),
+    dict(type='ApplyPixelation', pixel_size=4),
     dict(type='GetBBoxCenterScale'),
     dict(input_size=(
         192,
