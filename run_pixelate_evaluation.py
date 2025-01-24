@@ -1,6 +1,5 @@
 import subprocess
 
-KERNEL_SIZES = [f"{i}x{i}" for i in range(5, 102, 4)]
 
 ########## RTMPOSE MODEL AND CONFIG PATH ##########
 model_path_rtmpose_l = "models/ckpt/rtmpose-l_simcc-coco_pt-aic-coco_420e-256x192-1352a4d2_20230127.pth"
