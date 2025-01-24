@@ -139,7 +139,7 @@ train_pipeline = [
 ]
 val_pipeline = [
     dict(type='LoadImage', backend_args=backend_args),
-    dict(type='ApplyGaussianBlur', kernel_size=(3, 3)),
+    dict(type='ApplyPixelation', pixel_size=4),
     dict(type='GetBBoxCenterScale'),
     dict(type='TopdownAffine', input_size=codec['input_size']),
     dict(type='PackPoseInputs')
@@ -231,6 +231,6 @@ val_evaluator = dict(
     type='CocoMetric',
     ann_file=data_root + 'annotations/person_keypoints_val2017.json',
     format_only=True,
-    outfile_prefix='tools/json_results/rtmpose-l/blur/format_only'
+    outfile_prefix='tools/json_results/rtmpose-l/pixelate/format_only/'
 )
 test_evaluator = val_evaluator

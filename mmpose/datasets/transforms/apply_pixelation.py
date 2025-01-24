@@ -3,6 +3,7 @@ from mmcv import BaseTransform
 
 from mmpose.registry import TRANSFORMS
 
+
 @TRANSFORMS.register_module()
 class ApplyPixelation(BaseTransform):
     """Apply a pixelation filter to an image.
@@ -22,7 +23,7 @@ class ApplyPixelation(BaseTransform):
             creates a more pixelated effect. Defaults to 10.
     """
 
-    def __init__(self, pixel_size=10):
+    def __init__(self, pixel_size=4):
         self.pixel_size = pixel_size
 
     def transform(self, results: dict) -> dict:

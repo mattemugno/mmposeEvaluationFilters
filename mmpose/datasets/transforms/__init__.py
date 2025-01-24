@@ -1,5 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 from .apply_gaussianBlur import ApplyGaussianBlur
+from .apply_pixelation import ApplyPixelation
 from .bottomup_transforms import (BottomupGetHeatmapMask, BottomupRandomAffine,
                                   BottomupRandomChoiceResize,
                                   BottomupRandomCrop, BottomupResize)
@@ -23,5 +24,5 @@ __all__ = [
     'GenerateTarget', 'KeypointConverter', 'RandomFlipAroundRoot',
     'FilterAnnotations', 'YOLOXHSVRandomAug', 'YOLOXMixUp', 'Mosaic',
     'BottomupRandomCrop', 'BottomupRandomChoiceResize', 'HandRandomFlip',
-    'SingleHandConverter', 'ApplyGaussianBlur',
+    'SingleHandConverter', 'ApplyGaussianBlur', 'ApplyPixelation',
 ]
