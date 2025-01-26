@@ -7,12 +7,12 @@ def modify_kernel_size(config_path, new_pixel_size, output_path):
 
     updated_content = re.sub(
         r"(dict\(type='ApplyPixelation',\s*pixel_size=)\d+",
-        f"\\1{new_pixel_size}",
+        f"\\g<1>{new_pixel_size}",
         config_content
     )
 
     updated_content = re.sub(
-        r"(outfile_prefix='[^']*/pixelate/format_only/)\d+'",
+        r"(outfile_prefix='[^']*/pixelate/format_only/)(\d+)?'",
         lambda m: f"{m.group(1)}{new_pixel_size}'",
         updated_content
     )
@@ -22,10 +22,10 @@ def modify_kernel_size(config_path, new_pixel_size, output_path):
 
     print(f"File salvato con successo in: {output_path}")
 
-configs_folder = 'models/config/pixelate/rtmpose-l_8xb256-420e_coco-256x192'
+configs_folder = 'models/config/pixelate/td-hm_ViTPose-huge_8xb64-210e_coco-256x192'
 pixel_size = 4
 
 for config in os.listdir(configs_folder):
-    output_path = f'{configs_folder}/rtmpose-l_8xb256-420e_coco-256x192.py_{pixel_size}.py'
+    output_path = f'{configs_folder}/td-hm_ViTPose-huge_8xb64-210e_coco-256x192_{pixel_size}.py'
     modify_kernel_size(os.path.join(configs_folder, config), pixel_size, output_path)
     pixel_size += 4
