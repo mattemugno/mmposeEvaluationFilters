@@ -130,4 +130,7 @@ distance = np.sqrt(dx ** 2 + dy ** 2)
 if 'keypoint_errors' not in gt:
     gt[m]['keypoint_errors'] = {}
 gt[m]['keypoint_errors'][d['id']] = {'dx': dx.tolist(), 'dy': dy.tolist(), 'distance': distance.tolist()}
+
+
+'keypoint_errors': {g['id']: g.get('keypoint_errors', {}) for g in gt},
 ###########################
