@@ -115,3 +115,17 @@ data_files = [
 # plot_3d(data_files)
 #plot_heatmap(data_files)
 plot_3d_surface(data_files)
+
+########################## CODE FOR KEYPOINT EVALUATION
+dt_kpts = np.array(d['keypoints']).reshape(-1, 3)  # keypoints della predizione
+gt_kpts = np.array(gt[m]['keypoints']).reshape(-1, 3)  # keypoints del ground t
+# Calcola differenze (solo per keypoint visibili)
+visible = gt_kpts[:, 2] > 0
+dx = dt_kpts[visible, 0] - gt_kpts[visible, 0]
+dy = dt_kpts[visible, 1] - gt_kpts[visible, 1]
+distance = np.sqrt(dx ** 2 + dy *
+# Salva gli errori in una struttura dati
+if 'keypoint_errors' not in gt:
+    gt[m]['keypoint_errors'] = {}
+gt[m]['keypoint_errors'][d['id']] = {'dx': dx.tolist(), 'dy': dy.tolist(), 'distance': distance.tolist()}
+###########################
