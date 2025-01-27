@@ -213,6 +213,16 @@ train_pipeline = [
     dict(type='PackPoseInputs'),
 ]
 val_cfg = dict()
+val_pipeline = [
+    dict(type='LoadImage'),
+    dict(type='ApplyGaussianBlur', kernel_size=(73, 73)),
+    dict(type='GetBBoxCenterScale'),
+    dict(input_size=(
+        288,
+        384,
+    ), type='TopdownAffine'),
+    dict(type='PackPoseInputs'),
+]
 val_dataloader = dict(
     batch_size=32,
     dataset=dict(
@@ -222,15 +232,7 @@ val_dataloader = dict(
         data_mode='topdown',
         data_prefix=dict(img='val2017/'),
         data_root='data/coco/',
-        pipeline=[
-            dict(type='LoadImage'),
-            dict(type='GetBBoxCenterScale'),
-            dict(input_size=(
-                288,
-                384,
-            ), type='TopdownAffine'),
-            dict(type='PackPoseInputs'),
-        ],
+        pipeline=val_pipeline,
         test_mode=True,
         type='CocoDataset'),
     drop_last=False,
@@ -244,16 +246,6 @@ val_evaluator = dict(
     format_only=True,
     outfile_prefix='tools/json_results/hrnet-384x288/blur/format_only/73x73')
 test_evaluator = val_evaluator
-val_pipeline = [
-    dict(type='LoadImage'),
-    dict(type='ApplyGaussianBlur', kernel_size=(73, 73)),
-    dict(type='GetBBoxCenterScale'),
-    dict(input_size=(
-        288,
-        384,
-    ), type='TopdownAffine'),
-    dict(type='PackPoseInputs'),
-]
 vis_backends = [
     dict(type='LocalVisBackend'),
 ]
