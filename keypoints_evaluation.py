@@ -38,10 +38,6 @@ COCO_METRICS = {
     9: 'AR(L)',
 }
 
-data_root = "data/coco/annotations"
-results_root = "tools/json_results"
-model = "rtmpose-l"
-
 skeleton = [
     [16, 14], [14, 12], [17, 15], [15, 13], [12, 13], [6, 12], [7, 13], [6, 7], [6, 8],
     [7, 9], [8, 10], [9, 11], [2, 3], [1, 2], [1, 3], [2, 4], [3, 5], [4, 6], [5, 7]]
@@ -79,45 +75,50 @@ def evaluate(coco_gt, coco_dt, img_ids=None, iou_type='keypoints'):
 
 
 if __name__ == "__main__":
-    pred_file = "rtmpose-l_blur5x5.json"
 
-    filter = pred_file.split("_")[1].split(".")[0]
+    data_root = "data/coco/annotations"
+    results_root = "tools/json_results"
+    model = "hrnet-384x288"
 
-    gt_path = os.path.join(data_root, "person_keypoints_val2017.json")
-    pred_path = os.path.join(results_root, model, 'blur', 'format_only', pred_file)
+    for pred_file in os.listdir(f'tools/json_results/{model}/blur/format_only'):
 
-    coco_gt, coco_dt = load_data(gt_path, pred_path)
+        filter = pred_file.split(".")[0]
 
-    coco_eval = evaluate(coco_gt, coco_dt, iou_type='keypoints')
+        gt_path = os.path.join(data_root, "person_keypoints_val2017.json")
+        pred_path = os.path.join(results_root, model, 'blur', 'format_only', pred_file)
 
-    keypoint_distances = {}
+        coco_gt, coco_dt = load_data(gt_path, pred_path)
 
-    for pred_on_image in coco_eval.evalImgs:
-        if pred_on_image is None:
-            continue
-        keypoint_errors = pred_on_image['keypoint_errors']
-        for gt_id, predictions in keypoint_errors.items():
-            for pred_id, metrics in predictions.items():
-                for kp_idx, distance in enumerate(metrics['distance']):
-                    if kp_idx not in keypoint_distances:
-                        keypoint_distances[kp_idx] = []
-                    keypoint_distances[kp_idx].append(distance)
+        coco_eval = evaluate(coco_gt, coco_dt, iou_type='keypoints')
 
-    mean_errors = {}
-    for kp_idx, distances in keypoint_distances.items():
-        if distances:
-            mean_errors[kp_idx] = sum(distances) / len(distances)
-        else:
-            mean_errors[kp_idx] = None
+        keypoint_distances = {}
 
-    json_dict = {}
+        for pred_on_image in coco_eval.evalImgs:
+            if pred_on_image is None:
+                continue
+            keypoint_errors = pred_on_image['keypoint_errors']
+            for gt_id, predictions in keypoint_errors.items():
+                for pred_id, metrics in predictions.items():
+                    for kp_idx, distance in enumerate(metrics['distance']):
+                        if kp_idx not in keypoint_distances:
+                            keypoint_distances[kp_idx] = []
+                        keypoint_distances[kp_idx].append(distance)
 
-    for i, metric in enumerate(coco_eval.stats):
-        json_dict[COCO_METRICS[i]] = metric
+        mean_errors = {}
+        for kp_idx, distances in keypoint_distances.items():
+            if distances:
+                mean_errors[kp_idx] = sum(distances) / len(distances)
+            else:
+                mean_errors[kp_idx] = None
 
-    for kp_idx, mean_error in mean_errors.items():
-        print(f"Mean error for {COCO_KEYPOINT_INDEXES[kp_idx]}: {mean_error}")
-        json_dict[f"{COCO_KEYPOINT_INDEXES[kp_idx]}"] = mean_error
+        json_dict = {}
 
-    '''with open(f"{results_root}/{model}/blur/results/results_{model}_{filter}.json", "w") as f:
-        json.dump(json_dict, f, indent=2)'''
+        for i, metric in enumerate(coco_eval.stats):
+            json_dict[COCO_METRICS[i]] = metric
+
+        for kp_idx, mean_error in mean_errors.items():
+            print(f"Mean error for {COCO_KEYPOINT_INDEXES[kp_idx]}: {mean_error}")
+            json_dict[f"{COCO_KEYPOINT_INDEXES[kp_idx]}"] = mean_error
+
+        with open(f"{results_root}/{model}/blur/results/results_{model}_{filter}.json", "w") as f:
+            json.dump(json_dict, f, indent=2)

@@ -231,6 +231,6 @@ val_evaluator = dict(
     type='CocoMetric',
     ann_file=data_root + 'annotations/person_keypoints_val2017.json',
     format_only=True,
-    outfile_prefix='tools/json_results/rtmpose-l/blur/format_only'
+    outfile_prefix='tools/json_results/rtmpose-l/blur/format_only/'
 )
 test_evaluator = val_evaluator

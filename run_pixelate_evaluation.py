@@ -4,31 +4,31 @@ PIXEL_SIZES = [i for i in range(4, 53, 4)]
 
 ########## RTMPOSE MODEL AND CONFIG PATH ##########
 model_path_rtmpose_l = "models/ckpt/rtmpose-l_simcc-coco_pt-aic-coco_420e-256x192-1352a4d2_20230127.pth"
-BASE_PATH_RTMPOSE = "models/config/pixelate/rtmpose-l_8xb256-420e_coco-256x192/"
+BASE_PATH_RTMPOSE_PIXELATE = "models/config/pixelate/rtmpose-l_8xb256-420e_coco-256x192/"
 FILE_PREFIX_RTMPOSE = "rtmpose-l_8xb256-420e_coco-256x192_"
 
 pipeline_args_rtmpose = [
-    [f"{BASE_PATH_RTMPOSE}{FILE_PREFIX_RTMPOSE}{pixel_size}.py", model_path_rtmpose_l]
+    [f"{BASE_PATH_RTMPOSE_PIXELATE}{FILE_PREFIX_RTMPOSE}{pixel_size}.py", model_path_rtmpose_l]
     for pixel_size in PIXEL_SIZES
 ]
 
 ######### HRNET MODEL PATH ##########
 model_path_hrnet_384x288 = "models/ckpt/td-hm_hrnet-w48_8xb32-210e_coco-384x288-c161b7de_20220915.pth"
-BASE_PATH_HRNET = "models/config/pixelate/td-hm_hrnet-w48_8xb32-210e_coco-384x288/"
+BASE_PATH_HRNET_PIXELATE = "models/config/pixelate/td-hm_hrnet-w48_8xb32-210e_coco-384x288/"
 FILE_PREFIX_HRNET = "td-hm_hrnet-w48_8xb32-210e_coco-384x288_"
 
 pipeline_args_hrnet = [
-    [f"{BASE_PATH_HRNET}{FILE_PREFIX_HRNET}{pixel_size}.py", model_path_hrnet_384x288]
+    [f"{BASE_PATH_HRNET_PIXELATE}{FILE_PREFIX_HRNET}{pixel_size}.py", model_path_hrnet_384x288]
     for pixel_size in PIXEL_SIZES
 ]
 
 ######### ViTPose MODEL PATH #########
-model_path_vitpose_h = "models/ckpt/td-hm_ViTPose-huge_8xb64-210e_coco-256x192-e32adcd4_20230314.pth"
-BASE_PATH_VITPOSE = "models/config/pixelate/td-hm_ViTPose-huge_8xb64-210e_coco-256x192/"
+model_path_vitpose_h = "models/ckpt/td-hm_ViTPose-large_8xb64-210e_coco-256x192-e32adcd4_20230314.pth"
+BASE_PATH_VITPOSE_PIXELATE = "models/config/pixelate/td-hm_ViTPose-huge_8xb64-210e_coco-256x192/"
 FILE_PREFIX_VITPOSE = "td-hm_ViTPose-huge_8xb64-210e_coco-256x192_"
 
 pipeline_args_vitpose = [
-    [f"{BASE_PATH_VITPOSE}{FILE_PREFIX_VITPOSE}{pixel_size}.py", model_path_vitpose_h]
+    [f"{BASE_PATH_VITPOSE_PIXELATE}{FILE_PREFIX_VITPOSE}{pixel_size}.py", model_path_vitpose_h]
     for pixel_size in PIXEL_SIZES
 ]
 

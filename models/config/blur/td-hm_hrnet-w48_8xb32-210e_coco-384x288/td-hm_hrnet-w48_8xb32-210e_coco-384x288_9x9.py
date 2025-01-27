@@ -149,34 +149,7 @@ param_scheduler = [
 ]
 resume = False
 test_cfg = dict()
-test_dataloader = dict(
-    batch_size=32,
-    dataset=dict(
-        ann_file='annotations/person_keypoints_val2017.json',
-        bbox_file=
-        'data/coco/person_detection_results/COCO_val2017_detections_AP_H_56_person.json',
-        data_mode='topdown',
-        data_prefix=dict(img='val2017/'),
-        data_root='data/coco/',
-        pipeline=[
-            dict(type='LoadImage'),
-            dict(type='ApplyGaussianBlur', kernel_size=(9, 9)),
-            dict(type='GetBBoxCenterScale'),
-            dict(input_size=(
-                288,
-                384,
-            ), type='TopdownAffine'),
-            dict(type='PackPoseInputs'),
-        ],
-        test_mode=True,
-        type='CocoDataset'),
-    drop_last=False,
-    num_workers=2,
-    persistent_workers=True,
-    sampler=dict(round_up=False, shuffle=False, type='DefaultSampler'))
-test_evaluator = dict(
-    ann_file='data/coco/annotations/person_keypoints_val2017.json',
-    type='CocoMetric')
+
 train_cfg = dict(by_epoch=True, max_epochs=210, val_interval=10)
 train_dataloader = dict(
     batch_size=32,
@@ -211,7 +184,7 @@ train_dataloader = dict(
             dict(type='PackPoseInputs'),
         ],
         type='CocoDataset'),
-    num_workers=2,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(shuffle=True, type='DefaultSampler'))
 train_pipeline = [
@@ -261,16 +234,19 @@ val_dataloader = dict(
         test_mode=True,
         type='CocoDataset'),
     drop_last=False,
-    num_workers=2,
+    num_workers=8,
     persistent_workers=True,
     sampler=dict(round_up=False, shuffle=False, type='DefaultSampler'))
+test_dataloader = val_dataloader
 val_evaluator = dict(
     ann_file='data/coco/annotations/person_keypoints_val2017.json',
     type='CocoMetric',
     format_only=True,
     outfile_prefix='tools/json_results/hrnet-384x288/blur/format_only/9x9')
+test_evaluator = val_evaluator
 val_pipeline = [
     dict(type='LoadImage'),
+    dict(type='ApplyGaussianBlur', kernel_size=(9, 9)),
     dict(type='GetBBoxCenterScale'),
     dict(input_size=(
         288,

@@ -22,10 +22,11 @@ def modify_kernel_size(config_path, new_pixel_size, output_path):
 
     print(f"File salvato con successo in: {output_path}")
 
-configs_folder = 'models/config/pixelate/td-hm_ViTPose-huge_8xb64-210e_coco-256x192'
+configs_folder = 'models/config/pixelate/td-hm_ViTPose-base_8xb64-210e_coco-256x192'
+config = 'td-hm_ViTPose-base_8xb64-210e_coco-256x192.py'
 pixel_size = 4
 
-for config in os.listdir(configs_folder):
-    output_path = f'{configs_folder}/td-hm_ViTPose-huge_8xb64-210e_coco-256x192_{pixel_size}.py'
+for _ in range(10):
+    output_path = f'{configs_folder}/td-hm_ViTPose-base_8xb64-210e_coco-256x192_{pixel_size}.py'
     modify_kernel_size(os.path.join(configs_folder, config), pixel_size, output_path)
-    pixel_size += 4
+    pixel_size += 2
