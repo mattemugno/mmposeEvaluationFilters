@@ -79,13 +79,14 @@ if __name__ == "__main__":
     data_root = "data/coco/annotations"
     results_root = "tools/json_results"
     model = "hrnet-384x288"
+    filter = "blur"
 
-    for pred_file in os.listdir(f'tools/json_results/{model}/blur/format_only'):
+    for pred_file in os.listdir(f'tools/json_results/{model}/{filter}/format_only'):
 
         filter = pred_file.split(".")[0]
 
         gt_path = os.path.join(data_root, "person_keypoints_val2017.json")
-        pred_path = os.path.join(results_root, model, 'blur', 'format_only', pred_file)
+        pred_path = os.path.join(results_root, model, filter, 'format_only', pred_file)
 
         coco_gt, coco_dt = load_data(gt_path, pred_path)
 
@@ -120,5 +121,5 @@ if __name__ == "__main__":
             print(f"Mean error for {COCO_KEYPOINT_INDEXES[kp_idx]}: {mean_error}")
             json_dict[f"{COCO_KEYPOINT_INDEXES[kp_idx]}"] = mean_error
 
-        with open(f"{results_root}/{model}/blur/results/results_{model}_{filter}.json", "w") as f:
+        with open(f"{results_root}/{model}/{filter}/results/results_{model}_{filter}.json", "w") as f:
             json.dump(json_dict, f, indent=2)
