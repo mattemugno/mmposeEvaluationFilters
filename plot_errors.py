@@ -107,11 +107,8 @@ def plot_3d_surface(data_files):
     plt.show()
 
 
-data_files = [
-    os.path.join(data_root, 'results_rtmpose-l_blur3x3.json'),
-    os.path.join(data_root, 'results_rtmpose-l_blur5x5.json'),
-]
+data_files = [os.path.join(data_root, file) for file in os.listdir(data_root)]
 
-# plot_3d(data_files)
+plot_3d(data_files)
 #plot_heatmap(data_files)
-plot_3d_surface(data_files)
+#plot_3d_surface(data_files)
