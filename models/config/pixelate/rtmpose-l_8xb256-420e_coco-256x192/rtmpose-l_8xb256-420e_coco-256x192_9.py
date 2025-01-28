@@ -139,7 +139,7 @@ train_pipeline = [
 ]
 val_pipeline = [
     dict(type='LoadImage', backend_args=backend_args),
-    dict(type='ApplyPixelation', pixel_size=26),
+    dict(type='ApplyPixelation', pixel_size=9),
     dict(type='GetBBoxCenterScale'),
     dict(type='TopdownAffine', input_size=codec['input_size']),
     dict(type='PackPoseInputs')
@@ -191,7 +191,7 @@ train_dataloader = dict(
         pipeline=train_pipeline,
     ))
 val_dataloader = dict(
-    batch_size=128,
+    batch_size=64,
     num_workers=8,
     persistent_workers=True,
     drop_last=False,
@@ -231,6 +231,6 @@ val_evaluator = dict(
     type='CocoMetric',
     ann_file=data_root + 'annotations/person_keypoints_val2017.json',
     format_only=True,
-    outfile_prefix='tools/json_results/rtmpose-l/pixelate/format_only/26'
+    outfile_prefix='tools/json_results/rtmpose-l/pixelate/format_only/9'
 )
 test_evaluator = val_evaluator

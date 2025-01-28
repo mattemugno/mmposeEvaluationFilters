@@ -105,7 +105,7 @@ train_pipeline = [
 ]
 val_pipeline = [
     dict(type='LoadImage'),
-    dict(type='ApplyPixelation', pixel_size=1),
+    dict(type='ApplyPixelation', pixel_size=9),
     dict(type='GetBBoxCenterScale'),
     dict(type='TopdownAffine', input_size=codec['input_size'], use_udp=True),
     dict(type='PackPoseInputs')
@@ -149,5 +149,5 @@ val_evaluator = dict(
     type='CocoMetric',
     ann_file=data_root + 'annotations/person_keypoints_val2017.json',
     format_only=True,
-    outfile_prefix='tools/json_results/vitpose-b/pixelate/format_only/')
+    outfile_prefix='tools/json_results/vitpose-b/pixelate/format_only/9')
 test_evaluator = val_evaluator
