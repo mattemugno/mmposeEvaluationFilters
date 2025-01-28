@@ -1,13 +1,42 @@
 # Copyright (c) OpenMMLab. All rights reserved.
+import json
 import logging
 from argparse import ArgumentParser
+from os.path import exists
 
+import cv2
+import numpy as np
 from mmcv.image import imread
 from mmengine.logging import print_log
 
 from mmpose.apis import inference_topdown, init_model
 from mmpose.registry import VISUALIZERS
-from mmpose.structures import merge_data_samples
+from mmpose.structures import merge_data_samples, bbox_xywh2xyxy
+
+
+def _load_detection_results(bbox_file, img_id):
+    """Load data from detection results with dummy keypoint annotations."""
+
+    assert exists(bbox_file), (f'Bbox file `{bbox_file}` does not exist')
+    # load detection results
+    with open(bbox_file, 'r') as f:
+        det_results = json.load(f)
+    det_results = [entry for entry in det_results if entry["image_id"] == img_id]
+
+    data_list = []
+    for det in det_results:
+        # remove non-human instances
+        if det['category_id'] != 1:
+            continue
+
+        bbox_xywh = np.array(det['bbox'][:4], dtype=np.float32).reshape(1, 4)
+        bbox = bbox_xywh2xyxy(bbox_xywh)
+        bbox_score = np.array(det['score'], dtype=np.float32).reshape(1)
+
+        if bbox_score > 0.9:
+            data_list.append(bbox[0])
+
+    return data_list
 
 
 def parse_args():
@@ -62,51 +91,61 @@ def parse_args():
 def main():
     args = parse_args()
 
+    bboxxes_path = "../data/coco/person_detection_results/COCO_val2017_detections_AP_H_56_person.json"
+
+    kernel_sizes = [5, 17, 29, 41, 53, 65, 77, 89, 101]
+
     # build the model from a config file and a checkpoint file
     if args.draw_heatmap:
         cfg_options = dict(model=dict(test_cfg=dict(output_heatmaps=True)))
     else:
         cfg_options = None
 
-    model = init_model(
-        args.config,
-        args.checkpoint,
-        device=args.device,
-        cfg_options=cfg_options)
+    for intensity in kernel_sizes:
 
-    # init visualizer
-    model.cfg.visualizer.radius = args.radius
-    model.cfg.visualizer.alpha = args.alpha
-    model.cfg.visualizer.line_width = args.thickness
+        model = init_model(
+            args.config + f'_{intensity}x{intensity}.py',
+            args.checkpoint,
+            device=args.device,
+            cfg_options=cfg_options)
 
-    visualizer = VISUALIZERS.build(model.cfg.visualizer)
-    visualizer.set_dataset_meta(
-        model.dataset_meta, skeleton_style=args.skeleton_style)
+        # init visualizer
+        model.cfg.visualizer.radius = args.radius
+        model.cfg.visualizer.alpha = args.alpha
+        model.cfg.visualizer.line_width = args.thickness
 
-    # inference a single image
-    batch_results = inference_topdown(model, args.img)
-    results = merge_data_samples(batch_results)
+        visualizer = VISUALIZERS.build(model.cfg.visualizer)
+        visualizer.set_dataset_meta(
+            model.dataset_meta, skeleton_style=args.skeleton_style)
 
-    # show the results
-    img = imread(args.img, channel_order='rgb')
-    visualizer.add_datasample(
-        'result',
-        img,
-        data_sample=results,
-        draw_gt=False,
-        draw_bbox=True,
-        kpt_thr=args.kpt_thr,
-        draw_heatmap=args.draw_heatmap,
-        show_kpt_idx=args.show_kpt_idx,
-        skeleton_style=args.skeleton_style,
-        show=args.show,
-        out_file=args.out_file)
+        id = int(args.img.split('/')[-1].split('.')[0])
+        bboxes = _load_detection_results(bboxxes_path, id)
 
-    if args.out_file is not None:
-        print_log(
-            f'the output image has been saved at {args.out_file}',
-            logger='current',
-            level=logging.INFO)
+
+        # inference a single image
+        batch_results = inference_topdown(model, args.img, bboxes=bboxes)
+        results = merge_data_samples(batch_results)
+
+        # show the results
+        img = imread(args.img, channel_order='rgb')
+        visualizer.add_datasample(
+            'result',
+            cv2.GaussianBlur(img, (intensity, intensity), 0),
+            data_sample=results,
+            draw_gt=False,
+            draw_bbox=True,
+            kpt_thr=args.kpt_thr,
+            draw_heatmap=args.draw_heatmap,
+            show_kpt_idx=args.show_kpt_idx,
+            skeleton_style=args.skeleton_style,
+            show=args.show,
+            out_file=args.out_file + f'_{intensity}x{intensity}.jpg')
+
+        if args.out_file is not None:
+            print_log(
+                f'the output image has been saved at {args.out_file}',
+                logger='current',
+                level=logging.INFO)
 
 
 if __name__ == '__main__':
