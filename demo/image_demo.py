@@ -14,6 +14,19 @@ from mmpose.registry import VISUALIZERS
 from mmpose.structures import merge_data_samples, bbox_xywh2xyxy
 
 
+def pixelate(img, pixel_size=5):
+    h, w = img.shape[:2]
+
+    # Calculate the size of the reduced image
+    reduced_w = max(1, w // pixel_size)
+    reduced_h = max(1, h // pixel_size)
+
+    img_small = cv2.resize(img, (reduced_w, reduced_h), interpolation=cv2.INTER_LINEAR)
+    img_pixelated = cv2.resize(img_small, (w, h), interpolation=cv2.INTER_NEAREST)
+
+    return img_pixelated
+
+
 def _load_detection_results(bbox_file, img_id):
     """Load data from detection results with dummy keypoint annotations."""
 
@@ -94,6 +107,7 @@ def main():
     bboxxes_path = "../data/coco/person_detection_results/COCO_val2017_detections_AP_H_56_person.json"
 
     kernel_sizes = [5, 17, 29, 41, 53, 65, 77, 89, 101]
+    pixel_sizes = [2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16]
 
     # build the model from a config file and a checkpoint file
     if args.draw_heatmap:
@@ -101,10 +115,11 @@ def main():
     else:
         cfg_options = None
 
-    for intensity in kernel_sizes:
+    for intensity in pixel_sizes:
 
         model = init_model(
-            args.config + f'_{intensity}x{intensity}.py',
+            #args.config + f'_{intensity}x{intensity}.py',
+            args.config + f'_{intensity}.py',
             args.checkpoint,
             device=args.device,
             cfg_options=cfg_options)
@@ -130,7 +145,8 @@ def main():
         img = imread(args.img, channel_order='rgb')
         visualizer.add_datasample(
             'result',
-            cv2.GaussianBlur(img, (intensity, intensity), 0),
+            #cv2.GaussianBlur(img, (intensity, intensity), 0),
+            pixelate(img, pixel_size=intensity),
             data_sample=results,
             draw_gt=False,
             draw_bbox=True,
@@ -139,7 +155,7 @@ def main():
             show_kpt_idx=args.show_kpt_idx,
             skeleton_style=args.skeleton_style,
             show=args.show,
-            out_file=args.out_file + f'_{intensity}x{intensity}.jpg')
+            out_file=f'{intensity}.jpg')
 
         if args.out_file is not None:
             print_log(
