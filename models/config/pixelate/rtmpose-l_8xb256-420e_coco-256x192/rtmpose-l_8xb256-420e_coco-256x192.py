@@ -139,7 +139,7 @@ train_pipeline = [
 ]
 val_pipeline = [
     dict(type='LoadImage', backend_args=backend_args),
-    dict(type='ApplyPixelation', pixel_size=4),
+    dict(type='ApplyPixelation', pixel_size=1),
     dict(type='GetBBoxCenterScale'),
     dict(type='TopdownAffine', input_size=codec['input_size']),
     dict(type='PackPoseInputs')

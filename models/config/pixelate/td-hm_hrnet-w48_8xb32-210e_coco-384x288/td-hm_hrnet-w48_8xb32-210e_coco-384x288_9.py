@@ -216,7 +216,7 @@ val_cfg = dict()
 
 val_pipeline = [
     dict(type='LoadImage'),
-    dict(type='ApplyPixelation', pixel_size=1),
+    dict(type='ApplyPixelation', pixel_size=9),
     dict(type='GetBBoxCenterScale'),
     dict(input_size=(
         288,
@@ -245,7 +245,7 @@ val_evaluator = dict(
     ann_file='data/coco/annotations/person_keypoints_val2017.json',
     type='CocoMetric',
     format_only=True,
-    outfile_prefix='tools/json_results/hrnet-384x288/pixelate/format_only/')
+    outfile_prefix='tools/json_results/hrnet-384x288/pixelate/format_only/9')
 
 test_dataloader = val_dataloader
 test_evaluator = val_evaluator
