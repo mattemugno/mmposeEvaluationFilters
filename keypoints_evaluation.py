@@ -79,7 +79,7 @@ if __name__ == "__main__":
     data_root = "data/coco/annotations"
     results_root = "tools/json_results"
     model = "hrnet-384x288"
-    filter = "blur"
+    filter = "pixelate"
 
     for pred_file in os.listdir(f'tools/json_results/{model}/{filter}/format_only'):
 

@@ -1,7 +1,7 @@
 import json
 import os
 
-data_root = "tools/json_results/rtmpose-l/pixelate/results"
+data_root = "tools/json_results/hrnet-384x288/blur/results"
 
 def extract_kernel(filename):
     try:

@@ -191,7 +191,7 @@ train_dataloader = dict(
         pipeline=train_pipeline,
     ))
 val_dataloader = dict(
-    batch_size=128,
+    batch_size=64,
     num_workers=8,
     persistent_workers=True,
     drop_last=False,
